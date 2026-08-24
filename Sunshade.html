@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>BUS Under Trees— pick the shady side</title>
+<title>TREES under BUS — pick the shady side</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -150,6 +150,7 @@
   .presets{ font-size:.82rem; color:var(--ink-soft); }
   .presets button{ background:none; border:0; color:var(--shade-deep); text-decoration:underline; cursor:pointer; font-size:.82rem; padding:0; }
 
+  /* ---------- wizard steps ---------- */
   .wizard-step{ animation:fadein .25s ease; }
   @keyframes fadein{ from{ opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
   .step-dots{ display:flex; gap:6px; margin-bottom:18px; }
@@ -175,37 +176,42 @@
   }
   .error-banner.show{ display:block; }
 
-  /* ---------- location picker modal ---------- */
+  /* ---------- location picker modal (full-screen) ---------- */
   .modal-overlay{
-    position:fixed; inset:0; background:rgba(17,19,28,.55); display:none;
-    align-items:center; justify-content:center; z-index:200; padding:18px;
-    backdrop-filter:blur(2px);
+    position:fixed; inset:0; background:#fff; display:none;
+    z-index:200; padding:0;
   }
   .modal-overlay.show{ display:flex; }
   .modal-box{
-    background:#fff; border-radius:var(--radius); max-width:600px; width:100%;
-    max-height:92vh; overflow:auto; padding:22px; box-shadow:var(--shadow);
+    background:#fff; width:100%; height:100%; max-width:none; max-height:none;
+    padding:0; box-shadow:none; display:flex; flex-direction:column; overflow:hidden;
   }
-  .modal-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
-  .modal-head h3{ margin:0 0 4px; font-size:1.15rem; }
-  .modal-head p{ margin:0; color:var(--ink-soft); font-size:.85rem; }
-  .modal-close{ background:none; border:0; font-size:1.3rem; line-height:1; cursor:pointer; color:var(--ink-soft); padding:2px 6px; }
+  .modal-head{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+    padding:16px 18px 0; flex:0 0 auto;
+  }
+  .modal-head h3{ margin:0 0 4px; font-size:1.1rem; }
+  .modal-head p{ margin:0; color:var(--ink-soft); font-size:.82rem; }
+  .modal-close{ background:none; border:0; font-size:1.4rem; line-height:1; cursor:pointer; color:var(--ink-soft); padding:2px 6px; }
   .modal-close:hover{ color:var(--ink); }
-  .modal-search-row{ position:relative; margin-top:16px; }
+  .modal-search-row{ position:relative; padding:12px 18px 0; flex:0 0 auto; }
   .modal-search-row input{
     width:100%; padding:11px 13px; border-radius:11px; border:1.5px solid var(--line); font-size:.95rem; background:#fbfbfa;
   }
   .modal-search-row input:focus{ border-color:var(--sun-deep); background:#fff; }
-  #picker-map{ height:320px; border-radius:14px; margin-top:14px; border:1px solid var(--line); }
-  .modal-hint{ font-size:.78rem; color:var(--ink-soft); margin-top:8px; }
+  #picker-map{ flex:1 1 auto; min-height:220px; border-radius:0; border:0; margin:12px 0 0; }
+  .modal-hint{ font-size:.78rem; color:var(--ink-soft); margin:0; padding:8px 18px 0; flex:0 0 auto; }
   .modal-selected{
-    margin-top:12px; padding:10px 12px; background:var(--paper); border-radius:10px;
-    font-size:.85rem; min-height:20px; display:flex; align-items:center; gap:8px;
+    margin:0; padding:10px 18px; background:var(--paper);
+    font-size:.85rem; min-height:20px; display:flex; align-items:center; gap:8px; flex:0 0 auto;
   }
   .modal-selected .dot{ width:8px; height:8px; border-radius:50%; background:var(--shade); flex:0 0 auto; }
-  .modal-actions{ display:flex; justify-content:space-between; align-items:center; margin-top:16px; gap:10px; flex-wrap:wrap; }
-  .modal-nearby-row{ margin-top:12px; }
-  .nearby-list{ margin-top:10px; border:1px solid var(--line); border-radius:11px; overflow:hidden; max-height:180px; overflow-y:auto; }
+  .modal-actions{
+    display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:12px 18px; flex:0 0 auto; border-top:1px solid var(--line);
+  }
+  .modal-nearby-row{ padding:10px 18px 0; flex:0 0 auto; }
+  .nearby-list{ margin:10px 18px 0; border:1px solid var(--line); border-radius:11px; overflow:hidden; max-height:160px; overflow-y:auto; flex:0 0 auto; }
   .nearby-list button{
     display:block; width:100%; text-align:left; padding:9px 12px; border:0; background:#fff;
     cursor:pointer; font-size:.84rem; border-bottom:1px solid #f0f0ee;
@@ -337,10 +343,23 @@
     padding:4px 9px; border-radius:8px; pointer-events:none; user-select:none;
     backdrop-filter:blur(2px);
   }
+
+  #review-pill{
+    position:fixed; left:14px; bottom:12px; z-index:999998;
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--ink); color:#fff; font-size:.78rem; font-weight:600;
+    padding:9px 14px; border-radius:99px; text-decoration:none;
+    box-shadow:var(--shadow); transition:transform .15s ease, background .15s ease;
+  }
+  #review-pill:hover{ background:#000; transform:translateY(-1px); }
+  @media (max-width:640px){
+    #review-pill{ padding:8px 12px; font-size:.74rem; }
+  }
 </style>
 </head>
 <body>
 <div id="app-watermark" aria-hidden="true">@dhayalan</div>
+<a id="review-pill" href="https://forms.gle/j6BNYvzL1RaCbJSUA" target="_blank" rel="noopener noreferrer">📝 Post a review</a>
 
 <div class="topbar">
   <div class="wrap">
@@ -474,40 +493,6 @@
               <span><span class="swatch" style="background:#d8dbdd"></span> no direct sun</span>
             </div>
           </div>
-
-          <div class="panel">
-            <h3 class="section-title" style="font-size:1.05rem;">Sun timeline</h3>
-            <p class="section-sub" id="timeline-sub">Drag the scrubber to step through the trip.</p>
-            <div class="timeline-wrap">
-              <div class="timeline" id="timeline"></div>
-              <div class="timeline-scale">
-                <span id="ts-start">0:00</span>
-                <span id="ts-end">—</span>
-              </div>
-            </div>
-            <input type="range" class="scrubber" id="scrubber" min="0" max="100" value="0" aria-label="Scrub through trip time" />
-            <p class="runs-note" id="runs-note"></p>
-
-            <div class="dial-row">
-              <div class="dial">
-                <svg viewBox="0 0 150 150" id="dial-svg" aria-hidden="true">
-                  <circle cx="75" cy="75" r="66" fill="#fff" stroke="var(--line)" stroke-width="2"/>
-                  <g id="dial-wedge" opacity="0.9"></g>
-                  <line x1="75" y1="75" x2="75" y2="18" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" id="dial-heading"/>
-                  <circle cx="75" cy="75" r="3.5" fill="var(--ink)"/>
-                  <g id="dial-sun-mark"></g>
-                  <text x="75" y="12" text-anchor="middle" font-size="9" fill="var(--ink-soft)" font-family="IBM Plex Mono">travel dir.</text>
-                </svg>
-              </div>
-              <div class="dial-readout mono" id="dial-readout">
-                <div class="dr-row"><span class="dr-key">Time</span><span id="dr-time">—</span></div>
-                <div class="dr-row"><span class="dr-key">Heading</span><span id="dr-heading">—</span></div>
-                <div class="dr-row"><span class="dr-key">Sun azimuth</span><span id="dr-az">—</span></div>
-                <div class="dr-row"><span class="dr-key">Sun elevation</span><span id="dr-el">—</span></div>
-                <div class="dr-row"><span class="dr-key">Sunlit side</span><span id="dr-side">—</span></div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div>
@@ -597,12 +582,22 @@
      ever removed from the DOM, it's put back automatically. */
   (function watermarkGuard(){
     function ensureWatermark(){
-      if (document.getElementById('app-watermark')) return;
-      const mark = document.createElement('div');
-      mark.id = 'app-watermark';
-      mark.setAttribute('aria-hidden', 'true');
-      mark.textContent = '@dhayalan';
-      document.body.appendChild(mark);
+      if (!document.getElementById('app-watermark')){
+        const mark = document.createElement('div');
+        mark.id = 'app-watermark';
+        mark.setAttribute('aria-hidden', 'true');
+        mark.textContent = '@dhayalan';
+        document.body.appendChild(mark);
+      }
+      if (!document.getElementById('review-pill')){
+        const pill = document.createElement('a');
+        pill.id = 'review-pill';
+        pill.href = 'https://forms.gle/j6BNYvzL1RaCbJSUA';
+        pill.target = '_blank';
+        pill.rel = 'noopener noreferrer';
+        pill.textContent = '📝 Post a review';
+        document.body.appendChild(pill);
+      }
     }
     ensureWatermark();
     const observer = new MutationObserver(ensureWatermark);
@@ -1299,76 +1294,6 @@
     setTimeout(() => map.invalidateSize(), 50);
   }
 
-  function renderTimeline(route){
-    const timeline = $('timeline');
-    timeline.innerHTML = '';
-    const total = route.duration || 1;
-    route.runs.forEach(run => {
-      const div = document.createElement('div');
-      div.className = 'run ' + run.side;
-      div.style.width = (run.durationSec/total*100) + '%';
-      const label = run.side === 'none' ? 'no direct sun' : run.side + ' side';
-      div.dataset.tip = `${fmtMin(run.durationSec)} · ${label}`;
-      timeline.appendChild(div);
-    });
-    $('ts-start').textContent = fmtClock(state.departure);
-    $('ts-end').textContent = fmtClock(new Date(state.departure.getTime() + route.duration*1000));
-
-    $('runs-note').textContent = route.runs.length > 1
-      ? `The sunny side changes ${Math.max(route.runs.length - 1, 0)} time${route.runs.length-1===1?'':'s'} along this route.`
-      : 'The sun stays on one side (or absent) the whole trip.';
-
-    const scrubber = $('scrubber');
-    scrubber.max = Math.round(total);
-    scrubber.value = 0;
-    updateDial(route, 0);
-  }
-
-  function segmentAtOffset(route, offsetSec){
-    let cum = 0;
-    for (const s of route.segments){
-      if (offsetSec <= cum + s.durationSec) return s;
-      cum += s.durationSec;
-    }
-    return route.segments[route.segments.length - 1];
-  }
-
-  function updateDial(route, offsetSec){
-    const seg = segmentAtOffset(route, offsetSec);
-    if (!seg) return;
-    $('dr-time').textContent = fmtClock(seg.timestamp);
-    $('dr-heading').textContent = fmtDeg(seg.bearing);
-    $('dr-az').textContent = fmtDeg(seg.sunAzimuth);
-    $('dr-el').textContent = fmtDeg(seg.sunElevation) + (seg.sunElevation <= 0 ? ' (below horizon)' : '');
-    $('dr-side').textContent = seg.side === 'none' ? 'neither (ahead/behind or dark)' : seg.side;
-
-    const relDeg = seg.relBearing;
-    const angleForSvg = relDeg - 90;
-    const r = 50;
-    const cx = 75, cy = 75;
-    const sunX = cx + r * Math.cos(rad(angleForSvg));
-    const sunY = cy + r * Math.sin(rad(angleForSvg));
-
-    const wedge = $('dial-wedge');
-    if (seg.side === 'none'){
-      wedge.innerHTML = '';
-    } else {
-      const dz = state.deadzone;
-      const a1 = -90 + dz, a2 = -90 + (180 - dz);
-      const b1 = -90 - (180 - dz), b2 = -90 - dz;
-      const arc = (start, end, color) => {
-        const p1x = cx + r*Math.cos(rad(start)), p1y = cy + r*Math.sin(rad(start));
-        const p2x = cx + r*Math.cos(rad(end)), p2y = cy + r*Math.sin(rad(end));
-        return `<path d="M ${cx} ${cy} L ${p1x} ${p1y} A ${r} ${r} 0 0 1 ${p2x} ${p2y} Z" fill="${color}" opacity="0.16"></path>`;
-      };
-      wedge.innerHTML = arc(a1, a2, '#f2a93b') + arc(b1, b2, '#2e6e62');
-    }
-
-    const sunMark = $('dial-sun-mark');
-    const sunColor = seg.sunElevation <= 0 ? '#9aa0a6' : (seg.side === 'right' ? '#d98a1f' : seg.side === 'left' ? '#204e46' : '#9aa0a6');
-    sunMark.innerHTML = `<circle cx="${sunX.toFixed(1)}" cy="${sunY.toFixed(1)}" r="7" fill="${sunColor}" stroke="#fff" stroke-width="2"></circle>`;
-  }
-
   function renderSeats(route){
     const agg = route.aggregate;
     let leftLabel = 'Left', rightLabel = 'Right';
@@ -1411,13 +1336,8 @@
   function renderDetail(idx){
     const route = state.routes[idx];
     renderMap(route);
-    renderTimeline(route);
     renderSeats(route);
   }
-
-  $('scrubber').addEventListener('input', (e) => {
-    updateDial(state.routes[state.activeRouteIndex], parseFloat(e.target.value));
-  });
 
   document.querySelectorAll('.seat-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {
