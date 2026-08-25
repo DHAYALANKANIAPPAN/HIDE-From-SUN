@@ -2,7 +2,7 @@
 
 **Pick the seat the sun won't find.**
 
-TREES under BUS looks at your actual road trip — the real route, the real
+It looks at your actual road trip — the real route, the real
 road headings, and the real position of the sun at every point along the
 way — and tells you whether to sit on the **left** or the **right** side of
 the bus/car/train.
