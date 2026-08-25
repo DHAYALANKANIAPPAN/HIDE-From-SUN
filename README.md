@@ -1,4 +1,4 @@
-# TREES under BUS
+# Hide From Sun
 
 **Pick the seat the sun won't find.**
 
