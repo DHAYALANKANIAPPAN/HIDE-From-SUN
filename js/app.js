@@ -684,11 +684,12 @@
     });
   }
 
+  // Forcefully remove the offline cache so development updates appear instantly
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => {
-        console.log('Service Worker registration failed:', err);
-      });
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for(let registration of registrations) {
+        registration.unregister();
+      }
     });
   }
 
