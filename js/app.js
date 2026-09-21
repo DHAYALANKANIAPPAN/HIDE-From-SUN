@@ -313,6 +313,13 @@
 
   /* ---------------- Nearby Bus Stands ---------------- */
   async function handleBusStandSearch(target) {
+    // Fix: If you already have a location typed in, instantly focus the map on it
+    // so it searches exactly in that town, instead of the whole zoomed-out region!
+    const loc = target === 'from' ? state.origin : state.destination;
+    if (loc) {
+      map.setView([loc.lat, loc.lon], 14, { animate: false });
+    }
+
     const btn = $(`bus-${target}-btn`);
     const listContainer = $(`${target}-bus-list`);
     const targetInput = target === 'from' ? fromInput : toInput;
