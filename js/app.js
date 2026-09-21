@@ -141,7 +141,7 @@
   }
 
   /* ---------------- Geocoding & Routing ---------------- */
-  const HOME_REGION = { lat: 11.1271, lon: 78.6569, viewbox: '76.0,8.0,80.5,13.7', countrycodes: 'in' };
+  const HOME_REGION = { name: 'Tamil Nadu, India', lat: 11.1271, lon: 78.6569, viewbox: '76.0,8.0,80.5,13.7' };
 
   async function geocodeRaw(query, opts){
     const params = new URLSearchParams({ format: 'json', limit: '6', q: query, addressdetails: '0' });
@@ -154,10 +154,12 @@
   }
 
   async function geocode(query){
+    // 1) try biased to the home region first — best for local place names
     let results = [];
-    try { results = await geocodeRaw(query, { bounded: true, countrycodes: HOME_REGION.countrycodes }); } catch(e){}
+    try { results = await geocodeRaw(query, { bounded: true, countrycodes: 'in' }); } catch(e){}
     if (results && results.length) return results;
-    return geocodeRaw(query, { countrycodes: HOME_REGION.countrycodes });
+    // 2) fall back to an unrestricted global search (covers any other trip)
+    return geocodeRaw(query, {});
   }
 
   async function reverseGeocode(lat, lon){
@@ -169,13 +171,14 @@
   }
 
   async function searchNearby(term){
-    if (map.getZoom() < 10) {
-      // Auto-zoom to home region or current center if too zoomed out
-      map.setZoom(12);
+    // Force instant zoom if too far out so getBounds() is accurate immediately
+    if (map.getZoom() < 12) {
+      map.setZoom(13, { animate: false });
     }
     const b = map.getBounds();
     const viewbox = `${b.getWest()},${b.getSouth()},${b.getEast()},${b.getNorth()}`;
-    const params = new URLSearchParams({ format: 'json', q: term, viewbox, bounded: '1', limit: '15', countrycodes: 'in' });
+    // Exactly matching original logic: limit 8, bounded 1
+    const params = new URLSearchParams({ format: 'json', q: term, viewbox, bounded: '1', limit: '8' });
     const url = 'https://nominatim.openstreetmap.org/search?' + params.toString();
     const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
     if (!res.ok) throw new Error('unavailable');
