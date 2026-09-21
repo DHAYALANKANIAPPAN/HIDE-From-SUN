@@ -267,11 +267,18 @@ button { font-family: inherit; }
 
 /* ---------------- Mobile Bottom Sheet ---------------- */
 @media (max-width: 768px) {
+  #map-container {
+    bottom: 50vh; /* Map stops at the 50% mark */
+  }
   .sidebar {
-    top: auto; left: 0; right: 0; bottom: 0;
-    width: 100%; max-height: 85vh;
+    top: 50vh; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 50vh; max-height: 50vh;
     border-radius: 24px 24px 0 0;
     border-left: none; border-right: none; border-bottom: none;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-content {
+    flex: 1; overflow-y: auto;
   }
   /* Optional drag handle for mobile */
   .sidebar::before {
@@ -281,7 +288,10 @@ button { font-family: inherit; }
     background: var(--line);
     border-radius: 2px;
     margin: 12px auto 0;
+    flex-shrink: 0;
   }
+  /* Hide the ZIP button on mobile since phones can't execute ZIPs */
+  .zip-btn { display: none !important; }
 }
 
 /* Custom Leaflet overrides */
