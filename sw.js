@@ -1,11 +1,13 @@
-const CACHE_NAME = 'shadeseat-v1';
+const CACHE_NAME = 'shadeseat-v2';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
   './js/app.js',
   './manifest.json',
-  './icon.svg'
+  './icon.svg',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', event => {
