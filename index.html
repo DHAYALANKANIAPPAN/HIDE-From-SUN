@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>HIDE From SUN — pick the shady side</title>
+<title>ShadeSeat — Dodge the Sun</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -12,8 +12,6 @@
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-<div id="app-watermark" aria-hidden="true">@dhayalan</div>
-<a id="review-pill" href="https://forms.gle/j6BNYvzL1RaCbJSUA" target="_blank" rel="noopener noreferrer">📝 Post a review</a>
 
 <div id="map-container"></div>
 
@@ -23,8 +21,8 @@
     <div class="brand">
       <div class="brand-mark" aria-hidden="true"></div>
       <div>
-        <div class="brand-name">TREES under BUS</div>
-        <div class="brand-tag">seat-side sun forecasting</div>
+        <div class="brand-name">ShadeSeat</div>
+        <div class="brand-tag">Dodge the sun, enjoy the ride.</div>
       </div>
     </div>
 
@@ -41,25 +39,23 @@
             <div class="field-actions">
               <button type="button" class="link-btn" id="use-location-btn">◎ Use my location</button>
               <button type="button" class="link-btn" id="pick-from-btn">📍 Pick on map</button>
+              <button type="button" class="link-btn" id="bus-from-btn">🚌 Nearby bus stands</button>
             </div>
+            <div class="nearby-list hidden" id="from-bus-list"></div>
           </div>
           
           <button type="button" class="swap-btn" id="swap-btn" title="Swap origin and destination" aria-label="Swap origin and destination">⇄</button>
           
           <!-- TO -->
-          <div class="field" style="margin-top: 18px;">
+          <div class="field" style="margin-top: 24px;">
             <label for="to-input">To</label>
             <input type="text" id="to-input" placeholder="City, station, or address" autocomplete="off" required />
             <div class="autocomplete" id="to-suggest" hidden></div>
             <div class="field-actions">
               <button type="button" class="link-btn" id="pick-to-btn">📍 Pick on map</button>
+              <button type="button" class="link-btn" id="bus-to-btn">🚌 Nearby bus stands</button>
             </div>
-          </div>
-
-          <!-- BUS STAND BUTTON -->
-          <div class="field" style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line);">
-            <button type="button" class="btn-ghost" id="find-bus-stands" style="width: 100%; font-size: 0.82rem; padding: 8px;">🚌 Find Bus Stands in Map View</button>
-            <div class="nearby-list hidden" id="nearby-list-container"></div>
+            <div class="nearby-list hidden" id="to-bus-list"></div>
           </div>
 
         </div>

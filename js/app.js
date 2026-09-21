@@ -204,10 +204,11 @@
   let nearbyMarkers = [];
 
   function initMap() {
-    map = L.map('map-container', { zoomControl: false }).setView([11.1271, 78.6569], 7); // Tamil Nadu mostly
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+    // attributionControl: false removes the text from the map entirely. 
+    // We use OpenStreetMap tiles directly to avoid any "API required" errors.
+    map = L.map('map-container', { zoomControl: false, attributionControl: false }).setView([11.1271, 78.6569], 7); 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
     }).addTo(map);
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -290,11 +291,12 @@
   $('pick-to-btn').addEventListener('click', () => togglePickingMode('to'));
 
   /* ---------------- Nearby Bus Stands ---------------- */
-  $('find-bus-stands').addEventListener('click', async () => {
-    const btn = $('find-bus-stands');
-    const listContainer = $('nearby-list-container');
-    btn.textContent = 'Searching...';
+  async function handleBusStandSearch(target) {
+    const btn = $(`bus-${target}-btn`);
+    const listContainer = $(`${target}-bus-list`);
+    const targetInput = target === 'from' ? fromInput : toInput;
     
+    btn.textContent = 'Searching...';
     listContainer.classList.remove('hidden');
     listContainer.innerHTML = '<div class="nl-status">Looking for bus stands in this map view...</div>';
 
@@ -321,31 +323,16 @@
           b.type = 'button';
           b.textContent = '🚌 ' + r.display_name;
           b.addEventListener('click', () => {
-            // When clicked, assign to whatever we are currently picking, or default to 'from' if neither
-            const target = pickingTarget || (state.origin ? 'to' : 'from');
-            const targetInput = target === 'from' ? fromInput : toInput;
-            
             targetInput.value = r.display_name;
             if (target === 'from') state.origin = { lat, lon };
             else state.destination = { lat, lon };
             
             updateMapMarkers();
-            
-            // Clean up picking mode if it was active
-            if (pickingTarget) {
-              pickingTarget = null;
-              document.body.style.cursor = '';
-              $(`pick-${target}-btn`).style.fontWeight = 'normal';
-              $(`pick-${target}-btn`).textContent = '📍 Pick on map';
-            }
-
-            // Hide the list after selection
             listContainer.classList.add('hidden');
           });
           
           // Let the marker also trigger the same logic if clicked on the map directly
           marker.on('click', () => b.click());
-          
           listContainer.appendChild(b);
         });
         clearError();
@@ -353,9 +340,12 @@
     } catch(err) {
       listContainer.innerHTML = '<div class="nl-status">Failed to fetch nearby bus stands. Check network connection.</div>';
     } finally {
-      btn.textContent = '🚌 Find Bus Stands in Map View';
+      btn.textContent = '🚌 Nearby bus stands';
     }
-  });
+  }
+
+  $('bus-from-btn').addEventListener('click', () => handleBusStandSearch('from'));
+  $('bus-to-btn').addEventListener('click', () => handleBusStandSearch('to'));
 
   /* ---------------- Autocomplete & Inputs ---------------- */
   function wireAutocomplete(input, box, onPick){
@@ -435,7 +425,6 @@
     e.preventDefault();
     clearError();
     
-    // Fallback if user typed but didn't select from dropdown
     if (!state.origin){
       try { const r = await geocode(fromInput.value.trim()); if (r.length) state.origin = { lat: parseFloat(r[0].lat), lon: parseFloat(r[0].lon) }; }
       catch(_){}

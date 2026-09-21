@@ -257,26 +257,7 @@ button { font-family: inherit; }
   }
 }
 
-/* ---------------- Watermarks & Modals ---------------- */
-#app-watermark {
-  position: fixed; right: 14px; bottom: 12px; z-index: 999999;
-  font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600;
-  color: rgba(23, 26, 35, 0.38); background: rgba(255, 255, 255, 0.7);
-  padding: 4px 9px; border-radius: 8px; pointer-events: none;
-  backdrop-filter: blur(4px);
-}
-#review-pill {
-  position: fixed; right: 14px; top: 14px; z-index: 999998; /* Moved to top right out of the way */
-  background: var(--ink); color: #fff; font-size: 0.78rem; font-weight: 600;
-  padding: 8px 14px; border-radius: 99px; text-decoration: none;
-  box-shadow: var(--shadow); transition: transform 0.15s ease, background 0.15s ease;
-}
-#review-pill:hover { background: #000; transform: translateY(-1px); }
-
 /* Custom Leaflet overrides */
 .leaflet-control-container .leaflet-top.leaflet-left {
   display: none; /* Hide default zoom on top left to avoid sidebar overlap */
-}
-.leaflet-control-container .leaflet-bottom.leaflet-right {
-  bottom: 30px; /* Make space for watermark */
 }
