@@ -131,13 +131,9 @@
     timeInput.value = pad2(date.getHours()) + ':' + pad2(date.getMinutes());
   }
 
-  // Format full messy addresses into clean 2-line names for lists & inputs
-  function formatPlaceName(displayName) {
-    const parts = displayName.split(',');
-    const main = parts[0] ? parts[0].trim() : '';
-    const sub = parts.length > 1 ? parts.slice(1, 3).join(',').trim() : '';
-    const short = main + (sub ? ', ' + sub : '');
-    return { main, sub, short };
+  // Utility: Formatting coordinates
+  function fmtLatLon(lat, lon) {
+    return `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
   }
 
   /* ---------------- Geocoding & Routing ---------------- */
@@ -253,8 +249,7 @@
 
       try {
         const rawLabel = await reverseGeocode(lat, lon);
-        const { short } = formatPlaceName(rawLabel);
-        targetInput.value = short; // Use cleaner, shorter name
+        targetInput.value = rawLabel;
       } catch (err) {
         targetInput.value = fmtLatLon(lat, lon);
       }
@@ -329,20 +324,20 @@
       } else {
         listContainer.innerHTML = '';
         results.forEach(r => {
-          const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
-          const { main, sub, short } = formatPlaceName(r.display_name);
+          const lat = parseFloat(r.lat);
+          const lon = parseFloat(r.lon);
           
           // Drop marker on the map
           const marker = L.circleMarker([lat, lon], { radius: 7, color: '#d98a1f', fillColor: '#f2a93b', fillOpacity: 0.9, weight: 2 }).addTo(map);
-          marker.bindTooltip(main, { direction: 'top' }); // Only show the main name on the map tooltip
+          marker.bindTooltip(r.name || 'Bus Stand', { direction: 'top' }); 
           nearbyMarkers.push(marker);
 
-          // Create beautifully formatted button in the list
+          // Restore original raw text button
           const b = document.createElement('button');
           b.type = 'button';
-          b.innerHTML = `<strong>🚌 ${main}</strong><br><span style="font-size:0.75rem; color:#666; font-weight:normal;">${sub}</span>`;
+          b.textContent = '🚌 ' + r.display_name;
           b.addEventListener('click', () => {
-            targetInput.value = short;
+            targetInput.value = r.display_name;
             if (target === 'from') state.origin = { lat, lon };
             else state.destination = { lat, lon };
             
@@ -382,13 +377,11 @@
           if (!results.length){ box.innerHTML = '<div class="ac-status">No matches. Use "Pick on map" instead.</div>'; return; }
           box.innerHTML = '';
           results.forEach(r => {
-            const { main, sub, short } = formatPlaceName(r.display_name);
             const b = document.createElement('button');
             b.type = 'button';
-            // Use the same clean format for Autocomplete dropdowns
-            b.innerHTML = `<strong>${main}</strong><br><span style="font-size:0.75rem; color:#666; font-weight:normal;">${sub}</span>`;
+            b.textContent = r.display_name;
             b.addEventListener('click', () => {
-              input.value = short;
+              input.value = r.display_name;
               onPick({ lat: parseFloat(r.lat), lon: parseFloat(r.lon) });
               box.hidden = true;
             });
@@ -632,8 +625,7 @@
       updateMapMarkers();
       try {
         const rawLabel = await reverseGeocode(lat, lon);
-        const { short } = formatPlaceName(rawLabel);
-        fromInput.value = short;
+        fromInput.value = rawLabel;
       } catch(e) {
         fromInput.value = fmtLatLon(lat, lon);
       }
