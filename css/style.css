@@ -198,6 +198,14 @@ button { font-family: inherit; }
 .verdict-banner .vb-sub { font-size: 0.82rem; opacity: 0.85; margin-top: 6px; }
 .verdict-banner.none { background: linear-gradient(120deg, #2b2f38, #1c1f26); }
 
+.install-btn {
+  background: var(--brand); color: white; border: none; padding: 7px 14px;
+  border-radius: 99px; font-size: 0.75rem; font-weight: 600; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(228, 87, 46, 0.3); transition: background 0.2s, transform 0.1s;
+}
+.install-btn:hover { background: #d04620; transform: translateY(-1px); }
+.install-btn.hidden { display: none; }
+
 .seat-toggle { display: flex; background: var(--paper-2); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
 .seat-toggle button {
   flex: 1; padding: 8px; border-radius: 8px; border: none; background: transparent;
