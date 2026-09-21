@@ -351,7 +351,6 @@
     #review-pill{ padding:8px 12px; font-size:.74rem; }
   }
 </style>
-  <link rel="manifest" href="manifest.json">
 </head>
 <body>
 <div id="app-watermark" aria-hidden="true">@dhayalan</div>
@@ -438,6 +437,7 @@
               <select id="mode-input">
                 <option value="bus">Bus</option>
                 <option value="car">Car</option>
+                <option value="train">Train (road proxy)</option>
               </select>
             </div>
           </div>
@@ -1391,18 +1391,6 @@
     setTimeout(() => form.requestSubmit(), 50);
   })();
 
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      for(let registration of registrations) {
-        registration.unregister();
-      }
-    });
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js").catch(err => {
-        console.log("Service Worker registration failed:", err);
-      });
-    });
-  }
 })();
 </script>
 </body>
