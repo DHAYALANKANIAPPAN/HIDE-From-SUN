@@ -213,6 +213,16 @@ button { font-family: inherit; }
 .seat-row { display: flex; gap: 4px; justify-content: center; margin-top: 10px; }
 .seat { width: 14px; height: 14px; border-radius: 4px 4px 2px 2px; background: rgba(23, 26, 35, 0.15); }
 
+/* ---------------- Nearby Bus Stands List ---------------- */
+.nearby-list { margin-top: 10px; border: 1px solid var(--line); border-radius: 11px; overflow: hidden; max-height: 180px; overflow-y: auto; background: #fff; }
+.nearby-list button {
+  display: block; width: 100%; text-align: left; padding: 10px 14px; border: 0; background: none;
+  cursor: pointer; font-size: 0.86rem; border-bottom: 1px solid #f0f0ee; color: var(--ink);
+}
+.nearby-list button:last-child { border-bottom: 0; }
+.nearby-list button:hover { background: var(--paper-2); }
+.nearby-list .nl-status { padding: 10px 14px; font-size: 0.82rem; color: var(--ink-soft); }
+
 /* ---------------- Error & Utils ---------------- */
 .error-banner {
   margin-top: 14px; background: #fff4ee; border: 1px solid #f2c8b3; color: #8a3d1f;

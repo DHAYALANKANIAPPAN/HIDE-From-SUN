@@ -292,8 +292,12 @@
   /* ---------------- Nearby Bus Stands ---------------- */
   $('find-bus-stands').addEventListener('click', async () => {
     const btn = $('find-bus-stands');
+    const listContainer = $('nearby-list-container');
     btn.textContent = 'Searching...';
     
+    listContainer.classList.remove('hidden');
+    listContainer.innerHTML = '<div class="nl-status">Looking for bus stands in this map view...</div>';
+
     // clear old markers
     nearbyMarkers.forEach(m => map.removeLayer(m));
     nearbyMarkers = [];
@@ -301,13 +305,22 @@
     try {
       const results = await searchNearby('bus stand');
       if (!results.length) {
-        showError('No bus stands found in this view. Pan or zoom and try again.');
+        listContainer.innerHTML = '<div class="nl-status">No bus stands found in this view. Pan or zoom the map and try again.</div>';
       } else {
+        listContainer.innerHTML = '';
         results.forEach(r => {
           const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
+          
+          // Drop marker on the map
           const marker = L.circleMarker([lat, lon], { radius: 7, color: '#d98a1f', fillColor: '#f2a93b', fillOpacity: 0.9, weight: 2 }).addTo(map);
           marker.bindTooltip(r.display_name, { direction: 'top' });
-          marker.on('click', () => {
+          nearbyMarkers.push(marker);
+
+          // Create button in the list
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = '🚌 ' + r.display_name;
+          b.addEventListener('click', () => {
             // When clicked, assign to whatever we are currently picking, or default to 'from' if neither
             const target = pickingTarget || (state.origin ? 'to' : 'from');
             const targetInput = target === 'from' ? fromInput : toInput;
@@ -318,19 +331,27 @@
             
             updateMapMarkers();
             
+            // Clean up picking mode if it was active
             if (pickingTarget) {
               pickingTarget = null;
               document.body.style.cursor = '';
               $(`pick-${target}-btn`).style.fontWeight = 'normal';
               $(`pick-${target}-btn`).textContent = '📍 Pick on map';
             }
+
+            // Hide the list after selection
+            listContainer.classList.add('hidden');
           });
-          nearbyMarkers.push(marker);
+          
+          // Let the marker also trigger the same logic if clicked on the map directly
+          marker.on('click', () => b.click());
+          
+          listContainer.appendChild(b);
         });
         clearError();
       }
     } catch(err) {
-      showError('Failed to fetch nearby bus stands.');
+      listContainer.innerHTML = '<div class="nl-status">Failed to fetch nearby bus stands. Check network connection.</div>';
     } finally {
       btn.textContent = '🚌 Find Bus Stands in Map View';
     }
