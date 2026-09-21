@@ -141,11 +141,12 @@
   }
 
   /* ---------------- Geocoding & Routing ---------------- */
-  const HOME_REGION = { lat: 11.1271, lon: 78.6569, viewbox: '76.0,8.0,80.5,13.7' };
+  const HOME_REGION = { lat: 11.1271, lon: 78.6569, viewbox: '76.0,8.0,80.5,13.7', countrycodes: 'in' };
 
   async function geocodeRaw(query, opts){
     const params = new URLSearchParams({ format: 'json', limit: '6', q: query, addressdetails: '0' });
     if (opts && opts.bounded){ params.set('viewbox', HOME_REGION.viewbox); params.set('bounded', '1'); }
+    if (opts && opts.countrycodes){ params.set('countrycodes', opts.countrycodes); }
     const url = 'https://nominatim.openstreetmap.org/search?' + params.toString();
     const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
     if (!res.ok) throw new Error('Geocoding service unavailable');
@@ -154,9 +155,9 @@
 
   async function geocode(query){
     let results = [];
-    try { results = await geocodeRaw(query, { bounded: true }); } catch(e){}
+    try { results = await geocodeRaw(query, { bounded: true, countrycodes: HOME_REGION.countrycodes }); } catch(e){}
     if (results && results.length) return results;
-    return geocodeRaw(query, {});
+    return geocodeRaw(query, { countrycodes: HOME_REGION.countrycodes });
   }
 
   async function reverseGeocode(lat, lon){
@@ -168,9 +169,13 @@
   }
 
   async function searchNearby(term){
+    if (map.getZoom() < 10) {
+      // Auto-zoom to home region or current center if too zoomed out
+      map.setZoom(12);
+    }
     const b = map.getBounds();
     const viewbox = `${b.getWest()},${b.getSouth()},${b.getEast()},${b.getNorth()}`;
-    const params = new URLSearchParams({ format: 'json', q: term, viewbox, bounded: '1', limit: '15' });
+    const params = new URLSearchParams({ format: 'json', q: term, viewbox, bounded: '1', limit: '15', countrycodes: 'in' });
     const url = 'https://nominatim.openstreetmap.org/search?' + params.toString();
     const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
     if (!res.ok) throw new Error('unavailable');
