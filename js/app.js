@@ -150,12 +150,12 @@
   }
 
   async function geocode(query){
-    // 1) try biased to the home region first — best for local place names
+    // Search anywhere in India (no viewbox restriction so big cities are found perfectly)
     let results = [];
-    try { results = await geocodeRaw(query, { bounded: true, countrycodes: 'in' }); } catch(e){}
-    if (results && results.length) return results;
-    // 2) fall back to an unrestricted global search (covers any other trip)
-    return geocodeRaw(query, {});
+    try { 
+      results = await geocodeRaw(query, { countrycodes: 'in' }); 
+    } catch(e){}
+    return results;
   }
 
   async function reverseGeocode(lat, lon){
