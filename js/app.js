@@ -639,30 +639,37 @@
   const installBtn = $('install-app-btn');
 
   if (installBtn) {
+    // Hide button automatically if already installed and running in standalone mode
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      installBtn.style.display = 'none';
+    }
+
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent the mini-infobar from appearing on mobile automatically
       e.preventDefault();
-      // Stash the event so it can be triggered later.
       deferredPrompt = e;
-      // Update UI to notify the user they can install the PWA
-      installBtn.classList.remove('hidden');
     });
 
     installBtn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      // Show the install prompt
-      deferredPrompt.prompt();
-      // Wait for the user to respond to the prompt
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to the install prompt: ${outcome}`);
-      // We've used the prompt, throw it away
-      deferredPrompt = null;
-      installBtn.classList.add('hidden');
+      if (deferredPrompt) {
+        // Native installation prompt
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installBtn.style.display = 'none';
+        }
+        deferredPrompt = null;
+      } else {
+        // Fallback instructions for unsupported browsers (like Safari/iOS) or if running locally via file://
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          alert("You are already using the installed version of the app!");
+        } else {
+          alert("To install ShadeSeat:\n\n📱 iOS (Safari): Tap the Share button at the bottom and select 'Add to Home Screen'.\n\n🤖 Android/Desktop: Look for the Install icon in your browser's address bar, or use 'Add to Home screen' in the browser menu.");
+        }
+      }
     });
 
     window.addEventListener('appinstalled', () => {
-      // Hide the app-provided install promotion once installed
-      installBtn.classList.add('hidden');
+      installBtn.style.display = 'none';
       deferredPrompt = null;
     });
   }
