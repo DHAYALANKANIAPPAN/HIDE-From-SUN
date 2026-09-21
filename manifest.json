@@ -2,7 +2,7 @@
   "name": "ShadeSeat",
   "short_name": "ShadeSeat",
   "description": "Dodge the sun, enjoy the ride.",
-  "start_url": "./index.html",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#e4572e",
