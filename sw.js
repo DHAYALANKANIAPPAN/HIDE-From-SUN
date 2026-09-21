@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shadeseat-v2';
+const CACHE_NAME = 'shadeseat-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Force the waiting service worker to become the active service worker
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(ASSETS);
@@ -28,7 +29,6 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('activate', event => {
-  // Clean up old caches if the version changes
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
@@ -37,4 +37,5 @@ self.addEventListener('activate', event => {
       );
     })
   );
+  self.clients.claim(); // Force all clients to use the new service worker immediately
 });
