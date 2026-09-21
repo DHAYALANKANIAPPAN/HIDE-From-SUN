@@ -131,6 +131,15 @@
     timeInput.value = pad2(date.getHours()) + ':' + pad2(date.getMinutes());
   }
 
+  // Format full messy addresses into clean 2-line names for lists & inputs
+  function formatPlaceName(displayName) {
+    const parts = displayName.split(',');
+    const main = parts[0] ? parts[0].trim() : '';
+    const sub = parts.length > 1 ? parts.slice(1, 3).join(',').trim() : '';
+    const short = main + (sub ? ', ' + sub : '');
+    return { main, sub, short };
+  }
+
   /* ---------------- Geocoding & Routing ---------------- */
   const HOME_REGION = { lat: 11.1271, lon: 78.6569, viewbox: '76.0,8.0,80.5,13.7' };
 
@@ -205,9 +214,9 @@
 
   function initMap() {
     // attributionControl: false removes the text from the map entirely. 
-    // We use OpenStreetMap tiles directly to avoid any "API required" errors.
+    // Use Esri World Street Map tiles - 100% free, highly reliable, no API key required, and won't get 403 blocked.
     map = L.map('map-container', { zoomControl: false, attributionControl: false }).setView([11.1271, 78.6569], 7); 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 19
     }).addTo(map);
 
@@ -235,8 +244,9 @@
       $(`pick-${oldTarget}-btn`).textContent = '📍 Pick on map';
 
       try {
-        const label = await reverseGeocode(lat, lon);
-        targetInput.value = label;
+        const rawLabel = await reverseGeocode(lat, lon);
+        const { short } = formatPlaceName(rawLabel);
+        targetInput.value = short; // Use cleaner, shorter name
       } catch (err) {
         targetInput.value = fmtLatLon(lat, lon);
       }
@@ -312,18 +322,19 @@
         listContainer.innerHTML = '';
         results.forEach(r => {
           const lat = parseFloat(r.lat), lon = parseFloat(r.lon);
+          const { main, sub, short } = formatPlaceName(r.display_name);
           
           // Drop marker on the map
           const marker = L.circleMarker([lat, lon], { radius: 7, color: '#d98a1f', fillColor: '#f2a93b', fillOpacity: 0.9, weight: 2 }).addTo(map);
-          marker.bindTooltip(r.display_name, { direction: 'top' });
+          marker.bindTooltip(main, { direction: 'top' }); // Only show the main name on the map tooltip
           nearbyMarkers.push(marker);
 
-          // Create button in the list
+          // Create beautifully formatted button in the list
           const b = document.createElement('button');
           b.type = 'button';
-          b.textContent = '🚌 ' + r.display_name;
+          b.innerHTML = `<strong>🚌 ${main}</strong><br><span style="font-size:0.75rem; color:#666; font-weight:normal;">${sub}</span>`;
           b.addEventListener('click', () => {
-            targetInput.value = r.display_name;
+            targetInput.value = short;
             if (target === 'from') state.origin = { lat, lon };
             else state.destination = { lat, lon };
             
@@ -363,11 +374,13 @@
           if (!results.length){ box.innerHTML = '<div class="ac-status">No matches. Use "Pick on map" instead.</div>'; return; }
           box.innerHTML = '';
           results.forEach(r => {
+            const { main, sub, short } = formatPlaceName(r.display_name);
             const b = document.createElement('button');
             b.type = 'button';
-            b.textContent = r.display_name;
+            // Use the same clean format for Autocomplete dropdowns
+            b.innerHTML = `<strong>${main}</strong><br><span style="font-size:0.75rem; color:#666; font-weight:normal;">${sub}</span>`;
             b.addEventListener('click', () => {
-              input.value = r.display_name;
+              input.value = short;
               onPick({ lat: parseFloat(r.lat), lon: parseFloat(r.lon) });
               box.hidden = true;
             });
@@ -610,8 +623,9 @@
       state.origin = { lat, lon };
       updateMapMarkers();
       try {
-        const label = await reverseGeocode(lat, lon);
-        fromInput.value = label;
+        const rawLabel = await reverseGeocode(lat, lon);
+        const { short } = formatPlaceName(rawLabel);
+        fromInput.value = short;
       } catch(e) {
         fromInput.value = fmtLatLon(lat, lon);
       }
