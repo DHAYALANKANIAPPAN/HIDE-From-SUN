@@ -150,12 +150,20 @@
   }
 
   async function geocode(query){
-    // Search anywhere in India (no viewbox restriction so big cities are found perfectly)
     let results = [];
+    // 1) Try strictly inside the local region (best for small local towns)
     try { 
-      results = await geocodeRaw(query, { countrycodes: 'in' }); 
+      results = await geocodeRaw(query, { bounded: true, countrycodes: 'in' }); 
     } catch(e){}
-    return results;
+    
+    if (results && results.length > 0) return results;
+
+    // 2) Fallback to ALL of India (for cities like Delhi, Mumbai) but NEVER globally
+    try {
+      return await geocodeRaw(query, { countrycodes: 'in' });
+    } catch(e) {
+      return [];
+    }
   }
 
   async function reverseGeocode(lat, lon){
