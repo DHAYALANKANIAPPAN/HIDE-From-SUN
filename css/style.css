@@ -196,15 +196,34 @@ button { font-family: inherit; }
 .verdict-banner .vb-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; margin-bottom: 4px;}
 .verdict-banner .vb-main { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 600; line-height: 1.2; }
 .verdict-banner .vb-sub { font-size: 0.82rem; opacity: 0.85; margin-top: 6px; }
-.verdict-banner.none { background: linear-gradient(120deg, #2b2f38, #1c1f26); }
-
 .install-btn {
-  background: var(--brand); color: white; border: none; padding: 7px 14px;
-  border-radius: 99px; font-size: 0.75rem; font-weight: 600; cursor: pointer;
-  box-shadow: 0 2px 8px rgba(228, 87, 46, 0.3); transition: background 0.2s, transform 0.1s;
+  background: #e4572e !important; color: #ffffff !important; border: none !important; 
+  padding: 8px 16px !important; border-radius: 99px !important; font-size: 0.8rem !important; 
+  font-weight: 700 !important; cursor: pointer !important; opacity: 1 !important;
+  box-shadow: 0 2px 10px rgba(228, 87, 46, 0.4) !important; text-decoration: none;
+  display: inline-block; text-align: center;
 }
-.install-btn:hover { background: #d04620; transform: translateY(-1px); }
-.install-btn.hidden { display: none; }
+.install-btn:hover { background: #d04620 !important; transform: translateY(-1px); }
+.install-btn.hidden { display: none !important; }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center; z-index: 99999;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(4px);
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-content {
+  background: white; padding: 24px; border-radius: 16px; width: 90%; max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2); transform: translateY(20px); transition: transform 0.2s;
+}
+.modal-overlay.active .modal-content { transform: translateY(0); }
+.modal-title { font-family: 'Fraunces', serif; font-size: 1.4rem; margin-bottom: 12px; color: var(--ink); }
+.modal-text { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 20px; line-height: 1.5; }
+.modal-close {
+  background: var(--paper-2); border: none; padding: 8px 16px; border-radius: 8px;
+  cursor: pointer; font-weight: 600; width: 100%; margin-top: 12px;
+}
 
 .seat-toggle { display: flex; background: var(--paper-2); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
 .seat-toggle button {

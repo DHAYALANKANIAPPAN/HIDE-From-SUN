@@ -637,8 +637,10 @@
   /* ---------------- PWA Service Worker & Install ---------------- */
   let deferredPrompt;
   const installBtn = $('install-app-btn');
+  const modal = $('download-modal');
+  const modalClose = $('modal-close-btn');
 
-  if (installBtn) {
+  if (installBtn && modal) {
     // Hide button automatically if already installed and running in standalone mode
     if (window.matchMedia('(display-mode: standalone)').matches) {
       installBtn.style.display = 'none';
@@ -659,13 +661,13 @@
         }
         deferredPrompt = null;
       } else {
-        // Fallback instructions for unsupported browsers (like Safari/iOS) or if running locally via file://
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-          alert("You are already using the installed version of the app!");
-        } else {
-          alert("To install ShadeSeat:\n\n📱 iOS (Safari): Tap the Share button at the bottom and select 'Add to Home Screen'.\n\n🤖 Android/Desktop: Look for the Install icon in your browser's address bar, or use 'Add to Home screen' in the browser menu.");
-        }
+        // Fallback: show the custom modal giving them the ZIP download and instructions
+        modal.classList.add('active');
       }
+    });
+
+    modalClose.addEventListener('click', () => {
+      modal.classList.remove('active');
     });
 
     window.addEventListener('appinstalled', () => {
